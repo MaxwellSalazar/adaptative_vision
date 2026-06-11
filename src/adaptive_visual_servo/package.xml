@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>adaptive_visual_servo</name>
+  <version>0.1.0</version>
+  <description>
+    Control visual servo adaptativo con optimización de torque articular para
+    seguimiento de objetos en movimiento usando cámara monocular no calibrada.
+    Implementado en ROS2 Humble + Gazebo.
+  </description>
+
+  <maintainer email="maxwell@researcher.edu">Maxwell</maintainer>
+  <license>MIT</license>
+
+  <depend>rclpy</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>trajectory_msgs</depend>
+  <depend>control_msgs</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>image_transport</depend>
+  <depend>visualization_msgs</depend>
+
+  <exec_depend>ros2launch</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

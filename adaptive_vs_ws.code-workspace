@@ -1,0 +1,154 @@
+{
+    "folders": [
+        {
+            "name": "adaptive_vs_ws",
+            "path": "."
+        }
+    ],
+    "settings": {
+        // ── Intérprete Python → entorno virtual del proyecto ──────────────
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+        "python.terminal.activateEnvironment": true,
+
+        // ── Linting y formateo ────────────────────────────────────────────
+        "python.linting.enabled": true,
+        "python.linting.flake8Enabled": true,
+        "python.linting.pylintEnabled": false,
+        "python.formatting.provider": "black",
+        "editor.formatOnSave": true,
+        "[python]": {
+            "editor.defaultFormatter": "ms-python.black-formatter"
+        },
+
+        // ── Tests ──────────────────────────────────────────────────────────
+        "python.testing.pytestEnabled": true,
+        "python.testing.pytestArgs": ["tests/"],
+        "python.testing.unittestEnabled": false,
+        "python.testing.autoTestDiscoverOnSaveEnabled": true,
+
+        // ── IntelliSense: incluir paths de ROS2 y el paquete ──────────────
+        "python.analysis.extraPaths": [
+            "/opt/ros/humble/lib/python3.10/site-packages",
+            "${workspaceFolder}/src/adaptive_visual_servo",
+            "${workspaceFolder}/.venv/lib/python3.10/site-packages"
+        ],
+
+        // ── Editor ────────────────────────────────────────────────────────
+        "editor.rulers": [88],
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+
+        // ── Explorador: ocultar directorios de build ──────────────────────
+        "files.exclude": {
+            "**/__pycache__": true,
+            "**/*.pyc": true,
+            "**/build": true,
+            "**/install": true,
+            "**/log": true,
+            "**/.pytest_cache": true,
+            "**/*.egg-info": true
+        },
+
+        // ── Terminal integrado con ROS2 sourced ───────────────────────────
+        "terminal.integrated.env.linux": {
+            "PYTHONPATH": "/opt/ros/humble/lib/python3.10/site-packages:${workspaceFolder}/src/adaptive_visual_servo"
+        },
+        "terminal.integrated.defaultProfile.linux": "bash",
+
+        // ── YAML: schema validation para ROS2 ────────────────────────────
+        "yaml.schemas": {},
+        "yaml.format.enable": true
+    },
+
+    "extensions": {
+        "recommendations": [
+            "ms-python.python",
+            "ms-python.black-formatter",
+            "ms-python.flake8",
+            "ms-toolsai.jupyter",
+            "redhat.vscode-yaml",
+            "ms-vscode.cmake-tools",
+            "smilerobotics.urdf",
+            "zachflower.uncrustify"
+        ]
+    },
+
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Python: Tests",
+                "type": "python",
+                "request": "launch",
+                "module": "pytest",
+                "args": ["tests/", "-v"],
+                "console": "integratedTerminal",
+                "justMyCode": true
+            },
+            {
+                "name": "Python: Sensitivity Analysis",
+                "type": "python",
+                "request": "launch",
+                "program": "${workspaceFolder}/scripts/sensitivity_analysis.py",
+                "console": "integratedTerminal",
+                "justMyCode": true
+            },
+            {
+                "name": "Python: Analyze Results",
+                "type": "python",
+                "request": "launch",
+                "program": "${workspaceFolder}/scripts/analyze_results.py",
+                "args": [
+                    "--baseline", "${env:HOME}/vs_results/metrics_static_baseline_*.csv",
+                    "--proposed", "${env:HOME}/vs_results/metrics_static_proposed_*.csv",
+                    "--output", "${env:HOME}/vs_results/figures/"
+                ],
+                "console": "integratedTerminal",
+                "justMyCode": true
+            }
+        ]
+    },
+
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "Setup venv",
+                "type": "shell",
+                "command": "bash setup_venv.sh",
+                "group": "build",
+                "presentation": { "reveal": "always" }
+            },
+            {
+                "label": "Build ROS2 package",
+                "type": "shell",
+                "command": "source /opt/ros/humble/setup.bash && colcon build --symlink-install --packages-select adaptive_visual_servo",
+                "group": "build",
+                "presentation": { "reveal": "always" }
+            },
+            {
+                "label": "Run tests",
+                "type": "shell",
+                "command": "bash run_tests.sh",
+                "group": "test",
+                "presentation": { "reveal": "always" }
+            },
+            {
+                "label": "Launch: static proposed",
+                "type": "shell",
+                "command": "source /opt/ros/humble/setup.bash && source install/setup.bash && ros2 launch adaptive_visual_servo simulation.launch.py scenario:=static mode:=proposed",
+                "group": "none",
+                "presentation": { "reveal": "always" }
+            },
+            {
+                "label": "Launch: static baseline",
+                "type": "shell",
+                "command": "source /opt/ros/humble/setup.bash && source install/setup.bash && ros2 launch adaptive_visual_servo simulation.launch.py scenario:=static mode:=baseline",
+                "group": "none",
+                "presentation": { "reveal": "always" }
+            }
+        ]
+    }
+}

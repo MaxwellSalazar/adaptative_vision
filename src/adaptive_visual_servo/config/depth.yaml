@@ -1,0 +1,11 @@
+# config/depth.yaml
+# Configuración del estimador de profundidad por flujo óptico
+depth_estimator:
+  ros__parameters:
+    # Longitud focal en píxeles
+    # Para cámara 640x480 con FoV=55°: f ≈ 554px
+    focal_length: 554.0
+    debug_viz: false
+    max_corners: 50
+    quality_level: 0.3
+    min_distance: 20.0

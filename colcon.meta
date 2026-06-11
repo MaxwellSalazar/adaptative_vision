@@ -1,0 +1,8 @@
+{
+    "names": {
+        "adaptive_visual_servo": {
+            "cmake-args": [],
+            "symlink-install": true
+        }
+    }
+}

@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<!--
+  ur5_camera.urdf
+  ===============
+  UR5 simplificado para simulación en Gazebo con cámara monocular
+  montada en el efector final (eye-in-hand configuration).
+
+  La descripción completa del UR5 se obtiene de ros-humble-ur-description.
+  Este archivo solo define la cámara adicional y sus joints.
+
+  Para usar el URDF completo del UR5:
+      ros2 launch ur_description view_ur.launch.py ur_type:=ur5
+-->
+<robot name="ur5_with_camera">
+
+  <!-- ── Incluir UR5 base (requiere ur_description instalado) ── -->
+  <!-- xacro:include filename="$(find ur_description)/urdf/ur5.urdf.xacro" / -->
+
+  <!-- ── Soporte de cámara ──────────────────────────────────────────── -->
+  <link name="camera_mount_link">
+    <visual>
+      <geometry>
+        <box size="0.04 0.04 0.03"/>
+      </geometry>
+      <material name="dark_grey">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.04 0.04 0.03"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="1e-5" iyy="1e-5" izz="1e-5" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="camera_mount_joint" type="fixed">
+    <parent link="tool0"/>
+    <child link="camera_mount_link"/>
+    <origin xyz="0 0 0.05" rpy="0 1.5708 0"/>
+  </joint>
+
+  <!-- ── Cámara monocular ───────────────────────────────────────────── -->
+  <link name="camera_link">
+    <visual>
+      <geometry>
+        <box size="0.025 0.09 0.025"/>
+      </geometry>
+      <material name="camera_black">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.025 0.09 0.025"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.03"/>
+      <inertia ixx="5e-6" iyy="5e-6" izz="5e-6" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="camera_joint" type="fixed">
+    <parent link="camera_mount_link"/>
+    <child link="camera_link"/>
+    <origin xyz="0 0 0.02" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Frame óptico de la cámara (convenio ROS: z adelante, x derecha) -->
+  <link name="camera_optical_frame"/>
+  <joint name="camera_optical_joint" type="fixed">
+    <parent link="camera_link"/>
+    <child link="camera_optical_frame"/>
+    <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708"/>
+  </joint>
+
+  <!-- ── Plugin Gazebo: sensor de cámara ───────────────────────────── -->
+  <gazebo reference="camera_link">
+    <sensor name="monocular_camera" type="camera">
+      <update_rate>30.0</update_rate>
+      <visualize>true</visualize>
+      <camera>
+        <horizontal_fov>0.9599</horizontal_fov>  <!-- ~55 grados -->
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.01</near>
+          <far>10.0</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>  <!-- Ruido realista de cámara -->
+        </noise>
+      </camera>
+      <!-- Plugin ROS2 para publicar imagen -->
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <ros>
+          <namespace>/</namespace>
+          <remapping>image_raw:=/camera/image_raw</remapping>
+          <remapping>camera_info:=/camera/camera_info</remapping>
+        </ros>
+        <camera_name>monocular_camera</camera_name>
+        <frame_name>camera_optical_frame</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+</robot>

@@ -1,0 +1,32 @@
+# =============================================================================
+# requirements.txt — Dependencias del proyecto adaptive_visual_servo
+# Compatible con ROS2 Humble + Python 3.10
+# =============================================================================
+
+# ── Visión artificial ────────────────────────────────────────────────────────
+opencv-python>=4.8.0
+numpy>=1.24.0
+
+# ── Álgebra lineal y control ─────────────────────────────────────────────────
+scipy>=1.11.0
+
+# ── Visualización y análisis ─────────────────────────────────────────────────
+matplotlib>=3.7.0
+pandas>=2.0.0
+
+# ── Métricas energéticas ─────────────────────────────────────────────────────
+# (cálculos de potencia/torque se hacen con numpy, sin librería extra)
+
+# ── Testing ──────────────────────────────────────────────────────────────────
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# ── Utilidades ───────────────────────────────────────────────────────────────
+pyyaml>=6.0
+transforms3d>=0.4.1
+
+# ── ROS2 (se instalan con apt, listadas aquí solo como referencia) ────────────
+# ros-humble-desktop
+# ros-humble-gazebo-ros-pkgs
+# ros-humble-moveit
+# python3-colcon-common-extensions

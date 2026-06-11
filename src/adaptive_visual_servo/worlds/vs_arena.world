@@ -1,0 +1,120 @@
+<?xml version="1.0" ?>
+<!--
+  vs_arena.world
+  ==============
+  Escenario de simulación para visual servoing adaptativo.
+
+  Contenido:
+  - Mesa de trabajo (1.2m × 0.8m × 0.8m)
+  - Esfera naranja como objeto objetivo (radio 0.05m)
+  - Iluminación controlada (punto + ambiente)
+  - Suelo con textura neutra
+-->
+<sdf version="1.6">
+  <world name="vs_arena">
+
+    <!-- ── Física ──────────────────────────────────────────────────────── -->
+    <physics type="ode">
+      <real_time_update_rate>1000</real_time_update_rate>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+    </physics>
+
+    <!-- ── Plugins ──────────────────────────────────────────────────────── -->
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="gz-sim-ros-system" name="gz::sim::systems::ROS2"/>
+
+    <!-- ── Luz ambiente ─────────────────────────────────────────────────── -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.9 0.9 0.9 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <light type="point" name="worklight">
+      <pose>0.5 0.0 2.0 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>5</range>
+        <constant>0.3</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+    </light>
+
+    <!-- ── Suelo ─────────────────────────────────────────────────────────── -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>20 20</size></plane></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>20 20</size></plane></geometry>
+          <material>
+            <ambient>0.6 0.6 0.6 1</ambient>
+            <diffuse>0.6 0.6 0.6 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ── Mesa de trabajo ──────────────────────────────────────────────── -->
+    <model name="work_table">
+      <static>true</static>
+      <pose>0.5 0.0 0.0 0 0 0</pose>
+      <link name="link">
+        <collision name="col">
+          <pose>0 0 0.4 0 0 0</pose>
+          <geometry><box><size>1.2 0.8 0.8</size></box></geometry>
+        </collision>
+        <visual name="vis">
+          <pose>0 0 0.4 0 0 0</pose>
+          <geometry><box><size>1.2 0.8 0.8</size></box></geometry>
+          <material>
+            <ambient>0.6 0.4 0.2 1</ambient>
+            <diffuse>0.7 0.5 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ── Objeto objetivo: esfera naranja ──────────────────────────────── -->
+    <model name="target_sphere">
+      <pose>0.6 0.0 0.85 0 0 0</pose>
+      <link name="link">
+        <inertial>
+          <mass>0.1</mass>
+          <inertia><ixx>0.0001</ixx><iyy>0.0001</iyy><izz>0.0001</izz></inertia>
+        </inertial>
+        <collision name="col">
+          <geometry><sphere><radius>0.05</radius></sphere></geometry>
+        </collision>
+        <visual name="vis">
+          <geometry><sphere><radius>0.05</radius></sphere></geometry>
+          <material>
+            <ambient>1.0 0.5 0.0 1</ambient>
+            <diffuse>1.0 0.5 0.0 1</diffuse>
+            <specular>0.3 0.3 0.3 1</specular>
+          </material>
+        </visual>
+      </link>
+      <!-- Plugin para mover el objeto desde ROS2 -->
+      <plugin filename="gz-sim-pose-publisher-system"
+              name="gz::sim::systems::PosePublisher">
+        <publish_link_pose>true</publish_link_pose>
+        <use_pose_vector_msg>true</use_pose_vector_msg>
+        <static_publisher>false</static_publisher>
+      </plugin>
+    </model>
+
+  </world>
+</sdf>

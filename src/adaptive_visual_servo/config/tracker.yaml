@@ -1,0 +1,14 @@
+# config/tracker.yaml
+# Configuración del nodo FeatureTracker
+feature_tracker:
+  ros__parameters:
+    # Rango HSV para detección de la esfera naranja en Gazebo
+    # Ajustar según la iluminación del mundo simulado
+    hsv_lower: [10, 100, 100]
+    hsv_upper: [30, 255, 255]
+    image_width: 640
+    image_height: 480
+    # Features deseadas: objeto centrado a 80px de tamaño
+    desired_u: 320.0
+    desired_v: 240.0
+    desired_size_px: 80.0

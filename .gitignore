@@ -1,0 +1,58 @@
+# =============================================================================
+# .gitignore — adaptive_visual_servo
+# =============================================================================
+
+# ── Entorno virtual Python ────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+*.egg-info/
+__pycache__/
+*.py[cod]
+*.pyo
+dist/
+build/
+*.egg
+
+# ── ROS2 / colcon ────────────────────────────────────────────────────────────
+build/
+install/
+log/
+.colcon_install_layout
+
+# ── Resultados de experimentos (datos locales, no versionar) ─────────────────
+~/vs_results/
+vs_results/
+*.csv
+*.bag
+*.db3
+*.yaml.bak
+
+# ── Figuras generadas ─────────────────────────────────────────────────────────
+docs/coverage_html/
+*.pdf
+*.png
+!docs/architecture.png   # excepción: imagen de arquitectura del README
+
+# ── VSCode ────────────────────────────────────────────────────────────────────
+.vscode/settings.json
+.vscode/*.log
+# (conservar .code-workspace y launch.json)
+
+# ── pytest / cobertura ────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*~
+
+# ── Gazebo cache ──────────────────────────────────────────────────────────────
+.gazebo/
+~/.gazebo/

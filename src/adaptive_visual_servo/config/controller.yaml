@@ -1,0 +1,26 @@
+# config/controller.yaml
+# Parámetros del controlador visual servo adaptativo
+adaptive_vs_controller:
+  ros__parameters:
+    n_joints: 6
+    # λ_s: ganancia de convergencia imagen
+    # Rango típico [0.1, 1.0]. Valores altos → convergencia rápida pero inestable.
+    lambda_s: 0.5
+    # λ_τ: peso de penalización energética (Contribución C1)
+    # λ_τ = 0 → IBVS clásico (sin penalización)
+    # λ_τ > 0 → IBVS propuesto (penaliza torque)
+    # Rango para análisis de sensibilidad: [0.0, 0.5]
+    lambda_tau: 0.1
+    joint_vel_limit: 0.8
+    control_rate_hz: 30.0
+    baseline_mode: false
+    # Torques máximos UR5 (Nm) por junta: [shoulder, upper_arm, forearm, wrist1, wrist2, wrist3]
+    tau_max: [150.0, 150.0, 150.0, 28.0, 28.0, 28.0]
+
+ibvs_baseline_controller:
+  ros__parameters:
+    lambda_s: 0.5
+    assumed_depth: 0.8
+    focal_length: 554.0
+    n_joints: 6
+    joint_vel_limit: 0.8
